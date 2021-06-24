@@ -1,2 +1,2 @@
-# ImageGenerationService
-Image generation project based on Pix2Pix.
+# CatImageGeneration
+Cat image generation project based on Pix2Pix.
