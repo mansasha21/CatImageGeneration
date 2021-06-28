@@ -1,3 +1,5 @@
+# Fully implemented by myself but inspired by Aladdin Persson (https://www.youtube.com/watch?v=9SGs4Nm0VR4)
+
 import torch
 import torch.nn as nn
 
@@ -25,7 +27,8 @@ class Discriminator(nn.Module):
     def __init__(self, in_channels=IN_CHANNELS):
         super().__init__()
         convb0 = nn.Sequential(
-            nn.Conv2d(in_channels * 2, CHANNELS[0], kernel_size=4, stride=STRIDES[0], padding_mode='reflect', bias=False),
+            nn.Conv2d(in_channels * 2, CHANNELS[0], kernel_size=4,
+                      stride=STRIDES[0], padding_mode='reflect', bias=False),
             nn.LeakyReLU(0.2)
         )
         convblocks = [convb0]

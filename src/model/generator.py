@@ -1,3 +1,4 @@
+# Fully implemented by myself but inspired by Aladdin Persson (https://www.youtube.com/watch?v=9SGs4Nm0VR4)
 # Я пробовал использовать Upsample вместо ConvTranspose2d, но результаты оставались на том же уровне или хуже
 
 import torch
@@ -57,9 +58,9 @@ class Generator(nn.Module):
         self.up0 = UnetBlock(channels * 8, channels * 8, downsample=False, use_dropout=True)
         self.up1 = UnetBlock(channels * 16, channels * 8, downsample=False, use_dropout=True)
         self.up2 = UnetBlock(channels * 16, channels * 8, downsample=False, use_dropout=True)
-        self.up3 = UnetBlock(channels * 16, channels * 8, downsample=False, )
-        self.up4 = UnetBlock(channels * 16, channels * 4, downsample=False, )
-        self.up5 = UnetBlock(channels * 8, channels * 2, downsample=False, )
+        self.up3 = UnetBlock(channels * 16, channels * 8, downsample=False)
+        self.up4 = UnetBlock(channels * 16, channels * 4, downsample=False)
+        self.up5 = UnetBlock(channels * 8, channels * 2, downsample=False)
         self.up6 = UnetBlock(channels * 4, channels, downsample=False)
 
         self.up7 = nn.Sequential(
@@ -87,4 +88,3 @@ class Generator(nn.Module):
         up6 = self.up5(torch.cat([up5, d3], 1))
         up7 = self.up6(torch.cat([up6, d2], 1))
         return self.up7(torch.cat([up7, d1], 1))
-
