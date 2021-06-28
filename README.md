@@ -1,7 +1,6 @@
 # CatImageGeneration
 
 ## Prerequisites
-- Linux or macOS
 - Python 3
 - CPU or NVIDIA GPU + CUDA CuDNN
 
