@@ -8,8 +8,8 @@
 ### Installation
 
 - Clone this repo:
-- Create env `conda create --name pix2pix'
-- Install requirements `pip install -r requirements.txt`.
+- Create env `conda create --name pix2pix`
+- Install requirements `pip install -r requirements.txt`
 
 ### train/test
 - To download pretrained model and dataset run `bash bin/download.sh`
