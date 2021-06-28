@@ -15,7 +15,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--train_dir', default='../data_examples/train/')
     parser.add_argument('--val_dir', default=None, type=str)
-    parser.add_argument('--device', default='cuda')
+    parser.add_argument('--device', default='cuda', type=str)
     parser.add_argument('--checkpoint_dir', default='../models/')
     parser.add_argument('--checkpoint_freq', default=10, type=int)
     parser.add_argument('--lr', default=2e-4, type=float)
