@@ -21,3 +21,9 @@
 - Generate:
 `python generate.py --edge_dir .../data_examples/generate/ --device cuda --gen_path PATH_TO_PRETRAINED_MODEL --save_dir ../data_examples/generated_imgs/`
 
+## Results
+The model was trained on the Maps dataset and for fun I also tried using it to colorize anime.
+
+|1st col: Input / 2nd col: Generated / 3rd col: Target|
+|:---:|
+|![](data_examples/res.jpg)|
