@@ -7,7 +7,7 @@
 ## Getting Started
 ### Installation
 
-- Clone this repo:
+- Clone this repo
 - Create env `conda create --name pix2pix`
 - Install requirements `pip install -r requirements.txt`
 
