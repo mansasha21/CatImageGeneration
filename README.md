@@ -13,6 +13,7 @@
 
 ### train/test
 - To download pretrained model and dataset run `bash bin/download.sh`
+- Alternative way to download via GD [link](https://drive.google.com/file/d/11tABEiTAhtg6_LyV8Y_ZxwM7Rpy6LQSf/view?usp=sharing) [link](https://drive.google.com/file/d/1mv4AJ3cqe7IpQkFucyWSWeQnLck529nC/view?usp=sharing)
 
 - Train a model:
 `python train.py --train_dir ../data_examples/train/ --device cuda --checkpoint_dir ../models/`
