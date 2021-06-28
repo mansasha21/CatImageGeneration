@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 
 class Trainer:
-    def __init__(self, model, optimizers, dataloader, device, val_loader=None):
+    def __init__(self, model, optimizers, dataloader, device, save_dir, val_loader=None):
         self.model = model
         self.optimizers = optimizers
         self.dataloader = dataloader
@@ -16,7 +16,7 @@ class Trainer:
         self.device = device
         self.l1_loss = nn.L1Loss()
         self.bce_loss = nn.BCELoss()
-        self.save_dir = Path('../model/')
+        self.save_dir = Path(save_dir)
 
     def fit(self, epochs=1, l1_coef=100, save_freq=4):
         history = {'gen_loss': [], 'disc_loss': [], 'val_gen_loss': [], 'val_disc_loss': []}
@@ -50,8 +50,8 @@ class Trainer:
     def _train_epoch(self, l1_coef):
         history_epoch = {'gen_loss': [], 'disc_loss': []}
         for x_batch, y_batch in tqdm(self.dataloader, total=len(self.dataloader)):
-            x_batch = x_batch.to(self.device)
-            y_batch = y_batch.to(self.device)
+            x_batch = x_batch.to(self.device).float()
+            y_batch = y_batch.to(self.device).float()
 
             self.optimizers['disc'].zero_grad()
             disc_loss = self._calc_disc_loss(x_batch, y_batch)
@@ -73,6 +73,8 @@ class Trainer:
 
         with torch.no_grad():
             for x_batch, y_batch in tqdm(self.val_loader, total=len(self.val_loader)):
+                x_batch = x_batch.to(self.device).float()
+                y_batch = y_batch.to(self.device).float()
                 disc_loss = self._calc_disc_loss(x_batch, y_batch)
                 gen_loss = self._calc_gen_loss(x_batch, y_batch, l1_coef)
                 history['val_gen_loss'].append(gen_loss.item() * x_batch.size(0))
@@ -80,9 +82,6 @@ class Trainer:
         return history
 
     def _calc_disc_loss(self, x_batch, y_batch):
-        x_batch = x_batch.to(self.device)
-        y_batch = y_batch.to(self.device)
-
         gen_images = self.model['gen'](x_batch)
         real_preds = self.model['disc'](x_batch, y_batch)
         disc_real_loss = self.bce_loss(real_preds, torch.ones_like(real_preds))

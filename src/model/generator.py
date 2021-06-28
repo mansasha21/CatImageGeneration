@@ -1,3 +1,5 @@
+# Я пробовал использовать Upsample вместо ConvTranspose2d, но результаты оставались на том же уровне или хуже
+
 import torch
 import torch.nn as nn
 
@@ -7,13 +9,19 @@ from src.utils.utils import init_weights
 class UnetBlock(nn.Module):
     def __init__(self, in_channels, out_channels, downsample=True, use_dropout=False, activation=nn.ReLU()):
         super().__init__()
-        self.block = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, 4, 2, 1, padding_mode='reflect', bias=False)
-            if downsample
-            else nn.ConvTranspose2d(in_channels, out_channels, 4, 2, 1, bias=False),
-            nn.BatchNorm2d(out_channels),
-            activation
-        )
+        if downsample:
+            self.block = nn.Sequential(
+                nn.Conv2d(in_channels, out_channels, 4, 2, 1, padding_mode='reflect', bias=False),
+                nn.BatchNorm2d(out_channels),
+                activation
+            )
+        else:
+            self.block = nn.Sequential(
+                nn.ConvTranspose2d(in_channels, out_channels, 4, 2, 1, bias=False),
+                nn.BatchNorm2d(out_channels),
+                activation
+            )
+
         self.block.apply(init_weights)
         self.use_dropout = use_dropout
         self.dropout = nn.Dropout(0.5)
@@ -24,38 +32,38 @@ class UnetBlock(nn.Module):
 
 
 class Generator(nn.Module):
-    def __init__(self, in_channels=3, filters=64):
+    def __init__(self, in_channels=3, channels=64):
         super().__init__()
 
         self.down0 = nn.Sequential(
-            nn.Conv2d(in_channels, filters, 4, 2, 1, padding_mode='reflect'),
+            nn.Conv2d(in_channels, channels, 4, 2, 1, padding_mode='reflect'),
             nn.LeakyReLU(0.2)
         )
         self.down0.apply(init_weights)
 
-        self.down1 = UnetBlock(filters, filters*2, activation=nn.LeakyReLU(0.2))
-        self.down2 = UnetBlock(filters*2, filters*4, activation=nn.LeakyReLU(0.2))
-        self.down3 = UnetBlock(filters*4, filters*8, activation=nn.LeakyReLU(0.2))
-        self.down4 = UnetBlock(filters*8, filters*8, activation=nn.LeakyReLU(0.2))
-        self.down5 = UnetBlock(filters*8, filters*8, activation=nn.LeakyReLU(0.2))
-        self.down6 = UnetBlock(filters*8, filters*8, activation=nn.LeakyReLU(0.2))
+        self.down1 = UnetBlock(channels, channels * 2, activation=nn.LeakyReLU(0.2))
+        self.down2 = UnetBlock(channels * 2, channels * 4, activation=nn.LeakyReLU(0.2))
+        self.down3 = UnetBlock(channels * 4, channels * 8, activation=nn.LeakyReLU(0.2))
+        self.down4 = UnetBlock(channels * 8, channels * 8, activation=nn.LeakyReLU(0.2))
+        self.down5 = UnetBlock(channels * 8, channels * 8, activation=nn.LeakyReLU(0.2))
+        self.down6 = UnetBlock(channels * 8, channels * 8, activation=nn.LeakyReLU(0.2))
 
         self.bottleneck = nn.Sequential(
-            nn.Conv2d(filters*8, filters*8, 4, 2, 1, padding_mode='reflect'),
+            nn.Conv2d(channels * 8, channels * 8, 4, 2, 1, padding_mode='reflect'),
             nn.ReLU()
         )
         self.bottleneck.apply(init_weights)
 
-        self.up0 = UnetBlock(filters*8, filters*8, downsample=False, use_dropout=True)
-        self.up1 = UnetBlock(filters*16, filters*8, downsample=False, use_dropout=True)
-        self.up2 = UnetBlock(filters*16, filters*8, downsample=False, use_dropout=True)
-        self.up3 = UnetBlock(filters*16, filters*8, downsample=False,)
-        self.up4 = UnetBlock(filters*16, filters*4, downsample=False,)
-        self.up5 = UnetBlock(filters*8, filters*2, downsample=False,)
-        self.up6 = UnetBlock(filters*4, filters, downsample=False)
+        self.up0 = UnetBlock(channels * 8, channels * 8, downsample=False, use_dropout=True)
+        self.up1 = UnetBlock(channels * 16, channels * 8, downsample=False, use_dropout=True)
+        self.up2 = UnetBlock(channels * 16, channels * 8, downsample=False, use_dropout=True)
+        self.up3 = UnetBlock(channels * 16, channels * 8, downsample=False, )
+        self.up4 = UnetBlock(channels * 16, channels * 4, downsample=False, )
+        self.up5 = UnetBlock(channels * 8, channels * 2, downsample=False, )
+        self.up6 = UnetBlock(channels * 4, channels, downsample=False)
 
         self.up7 = nn.Sequential(
-            nn.ConvTranspose2d(filters*2, in_channels, 4, 2, 1),
+            nn.ConvTranspose2d(channels * 2, in_channels, 4, 2, 1),
             nn.Tanh()
         )
         self.up7.apply(init_weights)

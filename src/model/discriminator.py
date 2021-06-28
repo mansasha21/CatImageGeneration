@@ -3,7 +3,7 @@ import torch.nn as nn
 
 from src.utils.utils import init_weights
 
-FILTERS = [64, 128, 256, 512]
+CHANNELS = [64, 128, 256, 512]
 STRIDES = [2, 2, 2, 1]
 IN_CHANNELS = 3
 
@@ -25,15 +25,15 @@ class Discriminator(nn.Module):
     def __init__(self, in_channels=IN_CHANNELS):
         super().__init__()
         convb0 = nn.Sequential(
-            nn.Conv2d(in_channels*2, FILTERS[0], kernel_size=4, stride=STRIDES[0], padding_mode='reflect', bias=False),
+            nn.Conv2d(in_channels * 2, CHANNELS[0], kernel_size=4, stride=STRIDES[0], padding_mode='reflect', bias=False),
             nn.LeakyReLU(0.2)
         )
         convblocks = [convb0]
-        in_channels = FILTERS[0]
+        in_channels = CHANNELS[0]
 
-        for filter, stride in zip(FILTERS[1:], STRIDES[1:]):
-            convblocks.append(ConvBlock(in_channels, filter, stride))
-            in_channels = filter
+        for channel, stride in zip(CHANNELS[1:], STRIDES[1:]):
+            convblocks.append(ConvBlock(in_channels, channel, stride))
+            in_channels = channel
 
         convblocks.append(nn.Conv2d(in_channels, 1, kernel_size=4, padding=1, padding_mode='reflect'))
         convblocks.append(nn.Sigmoid())

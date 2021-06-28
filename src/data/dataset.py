@@ -32,3 +32,18 @@ class Pix2PixDataset(Dataset):
         return torch.tensor(x), torch.tensor(y)
 
 
+class Pix2PixGenDataset(Dataset):
+    def __init__(self, data_dir: Path):
+            self.data_dir = data_dir
+            self.files = list(data_dir.glob('*.jpg'))
+
+    def __len__(self):
+        return len(self.files)
+
+    def __getitem__(self, item):
+        x = np.array(Image.open(self.files[item]))
+        x = (x / MAX_PIXEL_VALUE - MEAN) / STD
+        x = transform.resize(x, (IMAGE_SIZE, IMAGE_SIZE)).transpose((2, 0, 1))
+        return torch.tensor(x)
+
+
