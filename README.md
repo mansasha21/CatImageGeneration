@@ -24,7 +24,9 @@
 
 ## Results
 The model was trained on the edge2cats dataset, edges were obtained by pretrained DexiNed [link](https://github.com/xavysp/DexiNed), cats faces dataset [link](https://www.kaggle.com/andrewmvd/animal-faces).
+Also model was trained on the maps dataset [link](https://www.kaggle.com/vikramtiwari/pix2pix-dataset).
 
 |1st col: Input / 2nd col: Generated / 3rd col: Target|
 |:---:|
 |![](data_examples/res.jpg)|
+|![](data_examples/res1.jpg)|
